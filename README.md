@@ -10,4 +10,5 @@
 ## 2. Olist E-Commerce
 * SQL, Tableau
 ### DATASET : https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+### DASHBOARD : https://public.tableau.com/app/profile/shin.hong.kyu/viz/olist_16563231682410/sheet0?publish=yes
 ### 주요 KPI 산출, 대시보드 구성
