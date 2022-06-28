@@ -59,3 +59,32 @@ from olist.orders as a
 where a.order_status not in ('unavailable', 'canceled')
 group by 1, 2, 3
 order by 1;
+
+# 월별 판매자 순위
+select substr(a.order_purchase_timestamp, 1, 7) as YM,
+	b.customer_state as 'state',
+    b.customer_city as 'city',
+    count(distinct c.seller_id) as seller_id
+from olist.orders as a
+	left join olist.customers as b
+		on a.customer_id= b.customer_id
+	left join olist.order_items as c
+		on a.order_id= c.order_id
+where a.order_status not in ('unavailable', 'canceled')
+group by 1, 2, 3
+order by 1;
+
+# 판매자별 물품 판매량, 매출
+select substr(a.order_purchase_timestamp, 1, 7) as YM,
+	coalesce(b.seller_id, 'unknown') as 'seller',
+    coalesce(c.product_category_name, '') as 'product',
+    count(distinct a.order_id) as order_cnt,
+    coalesce(sum(b.price), 0) as rev
+from olist.orders as a
+	left join olist.order_items as b
+		on a.order_id= b.order_id
+	left join olist.products as c
+		on b.product_id= c.product_id
+where a.order_status not in ('unavailable', 'canceled')
+group by 1, 2, 3
+order by 1;
