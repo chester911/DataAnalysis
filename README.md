@@ -13,4 +13,5 @@
 ### DASHBOARD : https://public.tableau.com/app/profile/shin.hong.kyu/viz/olist_16563231682410/RegionalAnalysis?publish=yes
 ### 주요 KPI 산출, 대시보드 구성
 * 전체 KPI를 확인할 수 있는 오버뷰 대시보드 구성 생각해봐야겠음
-* 생각나는 지표는 많지만, 이것을 시각화하는 것에 어려움을 
+* 생각나는 지표는 많지만, 이것을 시각화하는 것에 어려움을 느낌
+* 
