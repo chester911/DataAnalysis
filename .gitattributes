@@ -1,0 +1,5 @@
+Accident filter=lfs diff=lfs merge=lfs -text
+Commerce filter=lfs diff=lfs merge=lfs -text
+DataAnalysis filter=lfs diff=lfs merge=lfs -text
+Log filter=lfs diff=lfs merge=lfs -text
+Reataurant filter=lfs diff=lfs merge=lfs -text
