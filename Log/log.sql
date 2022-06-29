@@ -129,26 +129,67 @@ from view_user as a
 group by 1
 order by 1;
 
-# 코호트분석 (단위 : 월)
--- purchase 완료한 유저만 집계
-with first_order as
-(select user_id,
-	min(event_time) as first_order
+# event type별 세션 수
+select substr(event_time, 1, 7) as YM,
+	event_type,
+	count(distinct user_session) as sessions
 from event.log
-where event_type= 'purchase'
-group by 1)
-
-select ym,
-	month_diff,
-    count(distinct user_id) as user_cnt
-from
-(select a.*,
-	b.first_order,
-    timestampdiff(month, b.first_order, a.event_time) as month_diff,
-    substr(b.first_order, 1, 7) as YM
-from event.log as a
-	left join first_order as b
-		on a.user_id= b.user_id
-where a.event_type= 'purchase') as f
 group by 1, 2
 order by 1;
+
+# 제품별 구매자 수, 매출 (월별)
+-- category_code가 비어있는 데이터는 제외
+-- 월별 최다 구매자 상품
+with pu_monthly as
+(select substr(event_time, 1, 7) as YM,
+	category_code,
+    count(distinct user_id) as pu,
+    dense_rank() over(partition by substr(event_time, 1, 7) order by count(distinct user_id) desc) as rnk
+from event.log
+where event_type= 'purchase'
+group by 1, 2)
+
+select ym,
+	category_code as category,
+    pu
+from pu_monthly
+where rnk= 2;
+-- 월별 최고 매출 상품
+with rev_monthly as
+(select substr(event_time, 1, 7) as YM,
+	category_code,
+    sum(price) as rev,
+    dense_rank() over(partition by substr(event_time, 1, 7) order by sum(price) desc) as rnk
+from event.log
+where event_type= 'purchase'
+group by 1, 2)
+
+select ym,
+	category_code as 'category',
+    rev
+from rev_monthly
+where rnk= 1;
+
+-- # 코호트분석 (단위 : 월)
+-- -- purchase 완료한 유저만 집계
+-- with first_order as
+-- (select user_id,
+-- 	min(event_time) as first_order
+-- from event.log
+-- where event_type= 'purchase'
+-- group by 1)
+
+-- select ym,
+-- 	month_diff,
+--     count(distinct user_id) as user_cnt
+-- from
+-- (select a.*,
+-- 	b.first_order,
+--     timestampdiff(month, b.first_order, a.event_time) as month_diff,
+--     substr(b.first_order, 1, 7) as YM
+-- from event.log as a
+-- 	left join first_order as b
+-- 		on a.user_id= b.user_id
+-- where a.event_type= 'purchase') as f
+-- group by 1, 2
+-- order by 1;
