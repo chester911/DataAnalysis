@@ -1,0 +1,2 @@
+event_log.csv filter=lfs diff=lfs merge=lfs -text
+C:/Users/0/Desktop/DataAnalysis/Log/event_log.csv filter=lfs diff=lfs merge=lfs -text
