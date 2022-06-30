@@ -7,6 +7,7 @@
 ### 매장별 평점, 가격을 나타내는 대시보드 생성
 * 너무 간단한 데이터임
 * 뽑아낼 정보가 부족했음
+
 ## 2. Olist E-Commerce
 * SQL, Tableau
 ### DATASET : https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
@@ -14,4 +15,9 @@
 ### 주요 KPI 산출, 대시보드 구성
 * 전체 KPI를 확인할 수 있는 오버뷰 대시보드 구성 생각해봐야겠음
 * 생각나는 지표는 많지만, 이것을 시각화하는 것에 어려움을 느낌
-* 
+
+## 3. E-Commerce Events History
+* SQL, Tableau
+### DATASET : https://www.kaggle.com/datasets/mkechinov/ecommerce-events-history-in-electronics-store
+### 지표 산출 및 분석
+* MySQL로 데이터를 Import하는데 시간이 너무 오래걸려서 절반 가량의 데이터밖에 사용하지 
