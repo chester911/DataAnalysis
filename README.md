@@ -20,3 +20,4 @@
 * SQL, Tableau
 ### DATASET : https://www.kaggle.com/datasets/mkechinov/ecommerce-events-history-in-electronics-store
 ### 지표 산출 및 분석
+* MySQL로 데이터를 Import하는데 시간이 너무 오래걸려서 절반 가량의 데이터밖에 사용하지 
