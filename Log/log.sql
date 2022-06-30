@@ -94,6 +94,90 @@ from view_usr as a
 group by 1
 order by 1;
 
+# 월별 재구매율
+-- 전자제품의 특성상 1개월 이내의 재구매가 적음
+select substr(a.event_time, 1, 7) as YM,
+	count(distinct a.user_id) as pu_1,
+	count(distinct b.user_id) as pu_2,
+    count(distinct b.user_id)/ count(distinct a.user_id) as retention_rate
+from
+(select event_time,
+	user_id
+from event.log
+where event_type= 'purchase') as a
+	left join (select event_time,
+					user_id
+				from event.log
+                where event_type= 'purchase') as b
+					on a.user_id= b.user_id
+						and month(a.event_time)= month(b.event_time)- 1
+group by 1
+order by 1;
+
+# 월별 이탈율
+-- 구매 기준
+-- 마지막 구매일 이후 1개월동안 조회하지 않으면 이탈로 간주
+with bounce as
+(select *,
+	case when diff_month>= 1 then 'bounce'
+		else 'non_bounce'
+	end as 'bounce_type'
+from
+(select user_id,
+	latest_order,
+    '2020-12-15' as baseline,
+    timestampdiff(month, latest_order, '2020-12-15') as diff_month
+from
+(select user_id,
+	max(event_time) as latest_order
+from event.log
+where event_type= 'purchase'
+group by 1) as a) as b)
+
+select substr(latest_order, 1, 7) as YM,
+	count(distinct user_id) as user_cnt,
+	count(case when bounce_type= 'bounce' then bounce_type else null end) as 'bounce_cnt'
+from bounce
+group by 1
+order by 1;
+-- 전자제품의 특성상 1개월 이내의 재구매가 적을 것으로 판단
+-- 2020년 11월에는 재구매가 꽤 있음
+-- 이때 구매한 상품들?
+
+-- # 2020년 재구매자들이 구매한 상품
+-- -- 고객별 이탈 여부 테이블 생성
+-- with bounce as
+-- (select *,
+-- 	case when diff>= 1 then 'bounce'
+-- 		else 'non_bounce'
+-- 	end as bounce_type
+-- from
+-- (select user_id,
+-- 	'2020-12-15' as baseline,
+--     timestampdiff(month, latest_order, '2020-12-15') as diff
+-- from
+-- (select distinct user_id,
+-- 	max(date(event_time)) as latest_order
+-- from event.log
+-- where event_type= 'purchase'
+-- group by 1) as a) as b)
+
+-- select *
+-- from bounce
+-- where bounce_type= 'non_bounce';
+
+
+# 건당 주문 금액 (월별)
+-- 하나의 세션을 한 건의 주문으로 간주
+select substr(event_time, 1, 7) as YM,
+	count(distinct user_session) as order_cnt,
+    sum(price) as rev,
+    sum(price)/ count(distinct user_session) as atv
+from event.log
+where event_type= 'purchase'
+group by 1
+order by 1;
+
 # event type별 유저 수
 -- view user
 with view_user as
@@ -114,6 +198,7 @@ purchase_user as
 from event.log
 where event_type= 'purchase')
 
+# 월별 재구매율
 select a.ym,
 	count(distinct a.user_id) as view_user,
     count(distinct b.user_id) as cart_user,
@@ -169,6 +254,9 @@ select ym,
     rev
 from rev_monthly
 where rnk= 1;
+
+select *
+from event.log;
 
 -- # 코호트분석 (단위 : 월)
 -- -- purchase 완료한 유저만 집계
