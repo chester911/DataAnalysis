@@ -59,6 +59,7 @@ where event_type= 'purchase'
 group by 1, 2, 3, 4
 order by 1;
 
+##### Specific Table #####
 # event type별 유저 수
 -- view user
 with view_user as
@@ -132,3 +133,54 @@ from views as a
 		on b.user_id= c.user_id
 			and a.user_id= c.user_id
 group by 1, 2, 3;
+
+# 월별 재구매율
+-- 1개월 전에 구매한 사람이 해당 월에도 구매한 비율
+select substr(a.date, 1, 7) as YM,
+	count(distinct b.user_id) as pu_before,
+    count(distinct a.user_id) as pu_current,
+	count(distinct b.user_id)/ count(distinct a.user_id)* 100 as retention
+from
+(select date(event_time) as 'date',
+	user_id
+from event.log
+where event_type= 'purchase') as a
+	left join (select date(event_time) as 'date',
+					user_id
+				from event.log
+				where event_type= 'purchase') as b
+		on a.user_id= b.user_id
+			and month(a.date)= month(b.date)+ 1
+where substr(a.date, 1, 7)!= '2020-09'
+group by 1
+order by 1;
+-- 전자제품의 특성상 1개월 이내의 재구매율이 상당히 낮음
+-- 그럼 재구매된 상품들은?
+
+# 제품군별 재구매율
+with ret_category as
+(select substr(a.date, 1, 7) as YM,
+    a.category_code as category,
+    count(distinct b.user_id)/ count(distinct a.user_id)* 100 as retention
+from
+(select date(event_time) as 'date',
+	user_id,
+    category_code
+from event.log
+where event_type= 'purchase') as a
+	left join (select date(event_time) as 'date',
+					user_id,
+                    category_code
+				from event.log
+                where event_type= 'purchase') as b
+		on a.user_id= b.user_id
+			and month(a.date)= month(b.date)+ 1
+group by 1, 2
+order by 1)
+
+select ym,
+	category,
+    retention
+from ret_category
+where ym!= '2020-09'
+	and retention!= 0;
