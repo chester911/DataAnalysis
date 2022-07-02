@@ -135,7 +135,7 @@ from views as a
 group by 1, 2, 3;
 
 # 월별 재구매율
--- 1개월 전에 구매한 사람이 해당 월에도 구매한 비율
+-- 이번 달 구매자 중에서 저번 달 구매자의 비율
 select substr(a.date, 1, 7) as YM,
 	count(distinct b.user_id) as pu_before,
     count(distinct a.user_id) as pu_current,
@@ -158,29 +158,29 @@ order by 1;
 -- 그럼 재구매된 상품들은?
 
 # 제품군별 재구매율
-with ret_category as
-(select substr(a.date, 1, 7) as YM,
-    a.category_code as category,
-    count(distinct b.user_id)/ count(distinct a.user_id)* 100 as retention
+with ret_product as
+(select substr(a.date, 1, 7) as ym,
+	a.category,
+	count(distinct b.user_id) as pu_before,
+    count(distinct a.user_id) as pu_current
 from
 (select date(event_time) as 'date',
 	user_id,
-    category_code
+    category_code as 'category'
 from event.log
 where event_type= 'purchase') as a
 	left join (select date(event_time) as 'date',
 					user_id,
-                    category_code
+					category_code
 				from event.log
                 where event_type= 'purchase') as b
 		on a.user_id= b.user_id
 			and month(a.date)= month(b.date)+ 1
-group by 1, 2
-order by 1)
+where substr(a.date, 1, 7)!= '2020-09'
+group by 1, 2)
 
 select ym,
 	category,
-    retention
-from ret_category
-where ym!= '2020-09'
-	and retention!= 0;
+    pu_before,
+    pu_before/ pu_current* 100 as ret
+from ret_product;
