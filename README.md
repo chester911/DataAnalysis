@@ -28,4 +28,5 @@
 
 ## 4. Order Log
 * SQL
+### QUERY : https://github.com/chester911/DataAnalysis/blob/main/Commerce/Sales/sales.sql
 ### SQL을 활용한 지표 추출
