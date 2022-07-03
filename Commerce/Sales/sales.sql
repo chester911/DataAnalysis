@@ -1,99 +1,93 @@
-select *
-from sale_log.sales
-limit 100;
-
-# 지역별 구매자 수 및 매출액
--- complete, cod, paid만 집계
+# 월별 고객수, 주문 수, 매출
 select substr(order_date, 1, 7) as ym,
-	state,
+	status,
     count(distinct cust_id) as user_cnt,
     count(distinct order_id) as order_cnt,
     sum(total) as rev
 from sale_log.sales
-where status in ('complete', 'cod', 'paid')
 group by 1, 2
 order by 1;
--- 월별 매출 1위 지역?
-with monthly_rev as
-(select substr(order_date, 1, 7) as ym,
-	state,
-    sum(total) as rev,
-    rank() over(partition by substr(order_date, 1, 7) order by sum(total) desc) as rnk
-from sale_log.sales
-where status in ('complete', 'cod', 'paid')
-group by 1, 2
-order by 1)
 
-select ym,
-	state,
-    rev
-from monthly_rev
-where rnk= 1;
-
-# 상품별 구매자 수 및 매출액
+# 상품별 구매자 수, 주문 건수, 주문 수량, 매출 (월별로 집계)
+-- status == 'complete', 'cod', 'paid'
 select substr(order_date, 1, 7) as ym,
 	category,
-    count(distinct cust_id) as user_cnt,
-	count(distinct order_id) as order_cnt,
+	item_id,
+    count(distinct cust_id) as pu,
+    count(distinct order_id) as order_cnt,
+    sum(qty_ordered) as quantity,
     sum(total) as rev
 from sale_log.sales
 where status in ('complete', 'cod', 'paid')
-group by 1, 2
+group by 1, 2, 3
 order by 1;
--- 월별 1위 주문량 상품
-with monthly_qty as
+
+# 제품군별 할인율 (월별)
+-- 제품군별 월별 할인율
+with monthly_discount as
 (select substr(order_date, 1, 7) as ym,
 	category,
-    sum(qty_ordered) as quantity,
-    row_number() over(partition by substr(order_date, 1, 7) order by sum(qty_ordered) desc) as rnk
+    avg(discount_percent) as 'discount_percent',
+    rank() over(partition by substr(order_date, 1, 7) order by avg(discount_percent) desc) as rnk
 from sale_log.sales
-where status in ('complete', 'cod', 'paid')
 group by 1, 2
-order by 1),
-
-monthly_top as
-(select ym,
+order by 1)
+-- 월별 최고 할인 제품군
+select ym,
 	category,
-    quantity
-from monthly_qty
-where rnk= 1)
--- 이 상품들을 구매한 지역은?
-select category,
-	state,
-    sum(qty_ordered) as quantity
+    discount_percent
+from monthly_discount
+where rnk= 1;
+-- 할인 품목들과 주문량이 관련이 있을지 의문이 듦
+
+# 제품의 월별 할인 여부 별 주문 건수 (구매 기준)
+-- 제품군별 월별 할인 여부
+select substr(order_date, 1, 7) as ym,
+	category,
+    case when discount_percent> 0 then 'sale'
+		else 'non_sale'
+	end as sale_type,
+    order_id
 from sale_log.sales
 where status in ('complete', 'cod', 'paid')
-	and category in (select category from monthly_top)
-group by 1, 2;
+order by 1;
 
-### 취소, 반품 주문 분석
-# 지역별 취소 주문 비율
--- 지역별 취소 주문
-with monthly_cancel as
-(select substr(order_date, 1, 7) as ym,
+# 지역별 구매자 수, 주문 건수, 매출 (월별로 집계)
+select substr(order_date, 1, 7) as ym,
 	region,
     state,
-    count(distinct order_id) as cancel_cnt
+    count(distinct cust_id) as pu,
+    count(distinct order_id) as order_cnt,
+    sum(total) as rev
 from sale_log.sales
-where status in ('order_refunded', 'canceled', 'refund')
+where status in ('complete', 'cod', 'paid')
 group by 1, 2, 3
-order by 1),
--- 지역별 전체 주문
-monthly_cnt as
+order by 1;
+-- 구매자 수 보다 주문 건수가 많은 월이 있음
+-- 한 고객이 여러번 주문했음을 의미
+
+# 1개월 이내에 여러번 주문한 고객
+-- 월별 고객당 주문 건수
+with order_user as
 (select substr(order_date, 1, 7) as ym,
-	region,
-	state,
+	`user name` as 'user',
     count(distinct order_id) as order_cnt
 from sale_log.sales
-where status!= 'payment_review'
-group by 1, 2, 3 
+where status in ('complete', 'cod', 'paid')
+group by 1, 2
 order by 1)
+-- 한달에 2회 이상 구매한 고객이 구매한 제품군
+select category,
+	count(distinct cust_id) as pu,
+    count(distinct order_id) as order_cnt,
+    sum(total) as rev
+from sale_log.sales
+where status in ('complete', 'cod', 'paid')
+	and `user name` in (select distinct user
+						from order_user
+                        where order_cnt>= 2)
+group by 1;
 
-select a.*,
-	coalesce(b.cancel_cnt, 0) as cancel_cnt,
-    coalesce(b.cancel_cnt/ a.order_cnt* 100, 0) as ratio
-from monthly_cnt as a
-	left join monthly_cancel as b
-		on a.ym= b.ym
-			and a.region= b.region
-            and a.state= b.state;
+select *
+from sale_log.sales
+limit 10;
