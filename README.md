@@ -25,3 +25,7 @@
 ### DASHBOARD : https://public.tableau.com/app/profile/shin.hong.kyu/viz/Log_Analysis/Overview?publish=yes
 ### 지표 산출 및 분석
 * MySQL로 데이터를 Import하는데 시간이 너무 오래걸려서 절반 가량의 데이터밖에 사용하지 못함
+
+## 4. Order Log
+* SQL
+### SQL을 활용한 지표 산출 및 분석
