@@ -29,5 +29,5 @@
 ## 4. Order Log
 ### 1. SQL을 활용한 지표 추출
 * SQL, Tableau
-### QUERY : https://github.com/chester911/DataAnalysis/blob/main/Commerce/Sales/sales.sql
+### QUERY : https://github.com/chester911/DataAnalysis/blob/main/Commerce/Sales/sales_2.sql
 ### DASHBOARD : https://public.tableau.com/app/profile/shin.hong.kyu/viz/Refund/REFUND?publish=yes
