@@ -1,0 +1,16 @@
+week,status,cust_cnt,order_cnt
+202051,canceled,5931,11397
+202051,cod,65,68
+202051,complete,8304,15845
+202051,order_refunded,1648,2010
+202051,paid,19,21
+202051,received,816,912
+202051,refund,267,285
+202117,canceled,5488,11776
+202117,closed,4,4
+202117,cod,13,13
+202117,complete,971,1606
+202117,order_refunded,299,345
+202117,paid,2,2
+202117,received,3087,4293
+202117,refund,30,35

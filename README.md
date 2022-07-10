@@ -27,6 +27,8 @@
 * MySQL로 데이터를 Import하는데 시간이 너무 오래걸려서 절반 가량의 데이터밖에 사용하지 못함
 
 ## 4. Order Log
-* SQL
-### QUERY : https://github.com/chester911/DataAnalysis/blob/main/Commerce/Sales/sales.sql
-### SQL을 활용한 지표 추출
+### 1. SQL을 활용한 지표 추출
+#### 주문 취소 및 반품 위주
+* SQL, Tableau
+### QUERY : https://github.com/chester911/DataAnalysis/blob/main/Commerce/Sales/sales_2.sql
+### DASHBOARD : https://public.tableau.com/app/profile/shin.hong.kyu/viz/Refund/REFUND?publish=yes
