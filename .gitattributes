@@ -6,3 +6,4 @@ C:/Users/0/Desktop/DataAnalysis/CTI/ALLFLOWMETER_HIKARI2021.csv filter=lfs diff=
 C:/Users/0/Desktop/DataAnalysis/CTI/ALLFLOWMETER_HIKARI2021.csv filter=lfs diff=lfs merge=lfs -text
 C:/Users/0/Desktop/DataAnalysis/CTI/HIKARI/ALLFLOWMETER_HIKARI2021.csv filter=lfs diff=lfs merge=lfs -text
 C:/Users/0/Desktop/DataAnalysis/CTI/HIKARI/ALLFLOWMETER_HIKARI2021.csv filter=lfs diff=lfs merge=lfs -text
+C:/Users/0/Desktop/DataAnalysis/CTI/HIKARI/ALLFLOWMETER_HIKARI2021.csv filter=lfs diff=lfs merge=lfs -text
