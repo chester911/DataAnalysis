@@ -34,6 +34,8 @@
 ### DASHBOARD : https://public.tableau.com/app/profile/shin.hong.kyu/viz/Refund/REFUND?publish=yes
 
 
-## 5. Automobile Customers
-* SQL, Tableau
-### DATASET : https://www.kaggle.com/datasets/akashdeepkuila/automobile-customer?select=train-set.csv
+## 5. Data Science Job Salaries
+* Tableau
+### DATASET : https://www.kaggle.com/datasets/ruchi798/data-science-job-salaries
+### 데이터 분석가로 취업하기 위해 우선 데이터 관련 직군과 급여를 살펴보고자 함
+#### 대시보드를 제작해 확인
