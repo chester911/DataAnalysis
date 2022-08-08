@@ -32,8 +32,3 @@
 * SQL, Tableau
 ### QUERY : https://github.com/chester911/DataAnalysis/blob/main/Commerce/Sales/sales_2.sql
 ### DASHBOARD : https://public.tableau.com/app/profile/shin.hong.kyu/viz/Refund/REFUND?publish=yes
-
-
-## 5. Automobile Customers
-* SQL, Tableau
-### DATASET : https://www.kaggle.com/datasets/akashdeepkuila/automobile-customer?select=train-set.csv
