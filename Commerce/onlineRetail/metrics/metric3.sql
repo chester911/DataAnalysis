@@ -20,4 +20,4 @@ where stockCode in (select stockCode
 					from monthly_rev_rnk
                     where rnk<= 10)
 group by 1, 3
-order by 4 desc, 5 desc;
+order by 1, 3, 4 desc, 5 desc;
