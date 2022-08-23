@@ -25,7 +25,6 @@ from
 		substr(invoiceDate, 1, 10) as order_date
 	from retail
 	where year(invoiceDate)= 2011) as a)
-
 -- 월별 재구매율 계산
 -- 2011년 12월 제외
 select ym, ret_rate
